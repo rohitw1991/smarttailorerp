@@ -52,8 +52,14 @@ doc_events = {
 		"on_cancel": "erpnext.stock.doctype.material_request.material_request.update_completed_qty"
 	},
 	"User": {
-		"validate": "erpnext.hr.doctype.employee.employee.validate_employee_role",
-		"on_update": "erpnext.hr.doctype.employee.employee.update_user_permissions"
+		"validate": [
+		"erpnext.hr.doctype.employee.employee.validate_employee_role",
+		"erpnext.hr.doctype.employee.employee.validate_validity"
+		],
+		"on_update":[ 
+		"erpnext.hr.doctype.employee.employee.update_user_permissions",
+		"erpnext.hr.doctype.employee.employee.update_users"
+		],
 	}
 }
 
