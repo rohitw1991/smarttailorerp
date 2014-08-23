@@ -235,7 +235,7 @@
    "print_hide": 1
   }, 
   {
-   "default": " ", 
+   "default": "", 
    "fieldname": "assign_to", 
    "fieldtype": "Link", 
    "ignore_user_permissions": 1, 
@@ -244,7 +244,7 @@
    "permlevel": 0
   }, 
   {
-   "default": "0", 
+   "default": "", 
    "fieldname": "assign_in_future", 
    "fieldtype": "Select", 
    "label": "Assign In Future", 
@@ -254,7 +254,7 @@
  ], 
  "icon": "icon-ticket", 
  "idx": 1, 
- "modified": "2014-08-23 12:33:29.998857", 
+ "modified": "2014-08-23 15:31:14.914063", 
  "modified_by": "Administrator", 
  "module": "Support", 
  "name": "Support Ticket", 
