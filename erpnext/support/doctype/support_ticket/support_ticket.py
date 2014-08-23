@@ -115,27 +115,33 @@ def set_status(name, status):
 	st.status = status
 	st.save()
 
-
 @frappe.whitelist()
-def assign_future(name, assign_in_future):
-	check_entry = frappe.db.sql("""select assign_to from `tabAssing Master` where name = %s """, self.raised_by)
-	if check_entry :
-		if self.assign_in_future=='No':
-			frappe.db.sql("""delete from `tabAssing Master` where name = %s """, self.raised_by)	
-		else:
-			frappe.db.sql("""update `tabAssing Master` set assign_to=%s where name = %s """,(self.assign_to,self.raised_by)	
-	else:
-		if self.assign_in_future=='Yes':
-			am = frappe.new_doc("Assign Master")
-			am.update({
-			"name": raised_by,
-			"assign_to": assign_to,
-			"raised_by":raised_by
+def assing_future(name, assign_in_future,raised_by,assign_to):
+  	frappe.errprint("in assign")
+  	from frappe.utils import get_url, cstr
+	if get_url()=='http://smarttailor':
+		check_entry = frappe.db.sql("""select assign_to from `tabAssing Master` where name = %s """, raised_by)
+		frappe.errprint("in assign")
+		if check_entry :
+			frappe.errprint("chk")
+			if assign_in_future=='No':
+				frappe.errprint("no")
+				frappe.db.sql("""delete from `tabAssing Master` where name = %s """, raised_by)	
+			else :
+				frappe.errprint("Yes")
+				frappe.db.sql("""update `tabAssing Master` set assign_to=%s where name = %s """,(assign_to,raised_by))
+		else :
+			frappe.errprint("not chk")
+			if assign_in_future=='Yes':
+				frappe.errprint("Yes")
+				am = frappe.new_doc("Assing Master")
+				am.update({
+				"name": raised_by,
+				"assign_to": assign_to,
+				"raised_by":raised_by
 			})
 			am.insert()
 
 
 def auto_close_tickets():
-	frappe.db.sql("""update `tabSupport Ticket` set status = 'Closed'
-		where status = 'Replied'
-		and date_sub(curdate(),interval 15 Day) > modified""")
+	frappe.db.sql("""update `tabSupport Ticket` set status = 'Closed' where status = 'Replied' and date_sub(curdate(),interval 15 Day) > modified""")

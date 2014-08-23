@@ -67,7 +67,8 @@ scheduler_events = {
 	"all": [
 		"erpnext.support.doctype.support_ticket.get_support_mails.get_support_mails",
 		"erpnext.hr.doctype.job_applicant.get_job_applications.get_job_applications",
-		"erpnext.selling.doctype.lead.get_leads.get_leads"
+		"erpnext.selling.doctype.lead.get_leads.get_leads",
+		"erpnext.selling.doctype.lead.get_leads.assign_support"
 	],
 	"daily": [
 		"erpnext.accounts.doctype.sales_invoice.sales_invoice.manage_recurring_invoices",
