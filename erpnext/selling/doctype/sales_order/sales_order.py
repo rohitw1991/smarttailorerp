@@ -4,10 +4,12 @@
 from __future__ import unicode_literals
 import frappe
 import frappe.utils
-import json
+
 from frappe.utils import cstr, flt, getdate, comma_and
+
 from frappe import _
 from frappe.model.mapper import get_mapped_doc
+
 from erpnext.controllers.selling_controller import SellingController
 
 class SalesOrder(SellingController):
@@ -75,7 +77,7 @@ class SalesOrder(SellingController):
 
 	def validate_delivery_date(self):
 		# if self.order_type == 'Sales' and not self.delivery_date:
-		frappe.throw(_("Please enter 'Expected Delivery Date'"))
+		# frappe.throw(_("Please enter 'Expected Delivery Date'"))
 
 		self.validate_sales_mntc_quotation()
 
@@ -156,7 +158,6 @@ class SalesOrder(SellingController):
 
 		self.update_prevdoc_status('submit')
 		frappe.db.set(self, 'status', 'Submitted')
-		
 
 	def on_cancel(self):
 		# Cannot cancel stopped SO
@@ -240,70 +241,34 @@ class SalesOrder(SellingController):
 				update_bin(args)
 
 	def on_update(self):
-        	frappe.errprint("calling superadmin")
-        	from frappe.utils import get_url, cstr
-		frappe.errprint(get_url())
-		if get_url()=='http://smarttailor':
-			self.superadmin()
-			
-
-
-	def superadmin(self):
-		import requests
-		import json
-		pr = frappe.db.sql_list("""select item_code from `tabSales Order Item` where parent = %s limit 1""", self.name)
-		frappe.errprint(pr[0])
-		qr="select no_of_users from `tabItem` where name = '"+pr[0]+"'"
-		frappe.errprint(qr)
-		pro = frappe.db.sql_list(qr)
-		qr1="select validity from `tabItem` where name = '"+pr[0]+"'"
-		pro1 = frappe.db.sql_list(qr1)
-		#frappe.errprint(pro[0])
-		#frappe.errprint(pro[0])
-		headers = {'content-type': 'application/x-www-form-urlencoded'}
-		sup={'usr':'administrator','pwd':'admin'}
-		url = 'http://'+self.customer+'/api/method/login'
-		response = requests.get(url, data=sup, headers=headers)
-		#frappe.errprint(response.text)
-		#frappe.errprint(json.dumps(sup))
-		support_ticket={}
-		support_ticket['validity']=pro1[0]
-		support_ticket['no_of_users']=pro[0]
-		url = 'http://'+self.customer+'/api/resource/User/Administrator'
-		#frappe.errprint('data='+json.dumps(support_ticket))
-		response = requests.put(url, data='data='+json.dumps(support_ticket), headers=headers)
-		#frappe.errprint(response)
-		#frappe.errprint(response.text)
-		if pro1>0:
-			frappe.db.sql("update `tabSite Master`set expiry_date=DATE_ADD(CURDATE(), INTERVAL "+cstr(pro1[0])+" MONTH) where name='"+self.customer+"'")
-
+		pass
 
 	def get_portal_page(self):
 		return "order" if self.docstatus==1 else None
 
-	def on_submit(self):
+	# def on_submit(self):
 
-		"""send mail with sales details"""
+	# 	"""send mail with sales details"""
 
-		from frappe.utils.user import get_user_fullname
-		# from frappe.utils import get_url
-		# mail_titles = frappe.get_hooks().get("login_mail_title", [])
-		title = frappe.db.get_default('company') or (mail_titles and mail_titles[0]) or ""
+	# 	from frappe.utils.user import get_user_fullname
+	# 	# from frappe.utils import get_url
+	# 	# mail_titles = frappe.get_hooks().get("login_mail_title", [])
+	# 	title = frappe.db.get_default('company') or (mail_titles and mail_titles[0]) or ""
 
-		full_name = get_user_fullname(frappe.session['user'])
-		if full_name == "Guest":
-			full_name = "Administrator"
+	# 	full_name = get_user_fullname(frappe.session['user'])
+	# 	if full_name == "Guest":
+	# 		full_name = "Administrator"
 
-		message = frappe.db.sql_list("""select message from `tabTemplate Types`
-		where event_type='Sales Order Submit'""")
-		frappe.errprint(message[0])
-		frappe.errprint(message[0].format(self.first_name or self.last_name or "user",link,self.name,full_name))
+	# 	message = frappe.db.sql_list("""select message from `tabTemplate Types`
+	# 	where event_type='Sales Order Submit'""")
+	# 	frappe.errprint(message[0])
+	# 	# frappe.errprint(message[0].format(self.first_name or self.last_name or "user",link,self.name,full_name))
 
-		sender = frappe.session.user not in STANDARD_USERS and frappe.session.user or None
-		frappe.sendmail(recipients=self.email, sender=sender, subject=subject,
-			message=message[0].format(self.first_name or self.last_name or "user",link,self.name))
+	# 	sender = frappe.session.user not in STANDARD_USERS and frappe.session.user or None
+	# 	frappe.sendmail(recipients=self.email, sender=sender, subject=subject,
+	# 		message=message[0].format(self.first_name or self.last_name or "user",link,self.name))
 
-		frappe.throw(_("""Approval Status must be 'Approved' or 'Rejected'"""))		
+	# 	frappe.throw(_("""Approval Status must be 'Approved' or 'Rejected'"""))		
 
 
 @frappe.whitelist()
