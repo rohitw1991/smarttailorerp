@@ -62,6 +62,26 @@ def set_status(name, status):
 	st.status = status
 	st.save()
 
+
+@frappe.whitelist()
+def assign_future(name, assign_in_future):
+	check_entry = frappe.db.sql("""select assign_to from `tabAssing Master` where name = %s """, self.raised_by)
+	if check_entry :
+		if self.assign_in_future=='No':
+			frappe.db.sql("""delete from `tabAssing Master` where name = %s """, self.raised_by)	
+		else:
+			frappe.db.sql("""update `tabAssing Master` set assign_to=%s where name = %s """,(self.assign_to,self.raised_by)	
+	else:
+		if self.assign_in_future=='Yes':
+			am = frappe.new_doc("Assign Master")
+			am.update({
+			"name": raised_by,
+			"assign_to": assign_to,
+			"raised_by":raised_by
+			})
+			am.insert()
+
+
 def auto_close_tickets():
 	frappe.db.sql("""update `tabSupport Ticket` set status = 'Closed'
 		where status = 'Replied'

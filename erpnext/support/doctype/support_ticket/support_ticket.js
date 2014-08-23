@@ -77,3 +77,19 @@ $.extend(cur_frm.cscript, {
 	
 })
 
+cur_frm.cscript.assign_in_future = function(){
+		alert("in assign");
+		frappe.call({
+			method: "erpnext.support.doctype.support_ticket.support_ticket.assing_future",
+			args: {
+				name: cur_frm.doc.name
+				assign_in_future: assign_in_future
+			},
+			callback: function(r) {
+				if(!r.exc) cur_frm.reload_doc();
+			}
+		})	
+	
+     }
+
+
