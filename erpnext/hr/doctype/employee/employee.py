@@ -4,7 +4,7 @@
 from __future__ import unicode_literals
 import frappe
 
-from frappe.utils import getdate, validate_email_add, cint
+from frappe.utils import getdate, validate_email_add, cint,cstr
 from frappe.model.naming import make_autoname
 from frappe import throw, _, msgprint
 import frappe.permissions
@@ -213,8 +213,28 @@ def validate_employee_role(doc, method):
 			frappe.msgprint("Please set User ID field in an Employee record to set Employee Role")
 			doc.get("user_roles").remove(doc.get("user_roles", {"role": "Employee"})[0])
 
+def validate_validity(doc, method):
+	from frappe.utils import get_url, cstr
+	frappe.errprint(get_url())
+	if doc.get("__islocal") and get_url()!='http://smarttailor':
+	 	res = frappe.db.sql("select validity from `tabUser` where name='Administrator' and no_of_users >0")
+	 	if  res:
+	 			frappe.db.sql("update `tabUser`set no_of_users=no_of_users-1  where name='Administrator'")
+				from frappe.utils import nowdate,add_months,cint
+				doc.validity_start_date=nowdate()
+				doc.validity_end_date=add_months(nowdate(),cint(res[0][0]))
+				frappe.db.sql("update `tabUser` set flag='True' where name=%s", doc.name)				
+		else:
+	 			frappe.throw(_("Your User Creation limit is expired . Please contact administrator"))
+
 def update_user_permissions(doc, method):
 	# called via User hook
 	if "Employee" in [d.role for d in doc.get("user_roles")]:
 		employee = frappe.get_doc("Employee", {"user_id": doc.name})
 		employee.update_user_permissions()
+
+def update_users(doc, method):
+	if not doc.enabled :
+		abc=frappe.db.sql("""select name from `tabUser` where name=%s and enabled=1""", doc.name)
+		if abc:
+			frappe.db.sql("""update `tabSupport Ticket` set assign_to='Administrator' where assign_to=%s""",doc.name)
