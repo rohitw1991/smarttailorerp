@@ -60,6 +60,13 @@ doc_events = {
 		"erpnext.hr.doctype.employee.employee.update_user_permissions",
 		"erpnext.hr.doctype.employee.employee.update_users"
 		],
+	},
+	"Branch": {
+		"validate" : "tools.tools_management.custom_methods.branch_validation"
+	},
+	"Sales Invoice": {
+		"on_submit" : "tools.tools_management.custom_methods.generate_project_aginst_si",
+		"on_cancel" : "tools.tools_management.custom_methods.delete_project_aginst_si"  
 	}
 }
 

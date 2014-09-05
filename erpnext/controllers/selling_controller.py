@@ -12,6 +12,7 @@ from erpnext.controllers.stock_controller import StockController
 
 class SellingController(StockController):
 	def __setup__(self):
+		# frappe.errprint("in the Sellin Controller")
 		if hasattr(self, "fname"):
 			self.table_print_templates = {
 				self.fname: "templates/print_formats/includes/item_grid.html",
@@ -19,7 +20,7 @@ class SellingController(StockController):
 			}
 
 	def onload(self):
-		if self.doctype in ("Sales Order", "Delivery Note", "Sales Invoice"):
+		if self.doctype in ("Sales Order","Delivery Note", "Sales Invoice","Sales Invoice Transaction2"):
 			for item in self.get(self.fname):
 				item.update(get_available_qty(item.item_code,
 					item.warehouse))
@@ -209,9 +210,15 @@ class SellingController(StockController):
 	def calculate_net_total(self):
 		self.net_total = self.net_total_export = 0.0
 
+		# frappe.errprint(self.item_doclist)
+
 		for item in self.item_doclist:
+			# frappe.errprint(self.net_total)
+
 			self.net_total += item.base_amount
 			self.net_total_export += item.amount
+			# frappe.errprint(self.net_total_export)
+
 
 		self.round_floats_in(self, ["net_total", "net_total_export"])
 

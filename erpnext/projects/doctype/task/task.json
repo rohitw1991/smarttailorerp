@@ -1,5 +1,5 @@
 {
-  "allow_import": 1, 
+ "allow_import": 1, 
  "autoname": "TASK.#####", 
  "creation": "2013-01-29 19:25:50", 
  "docstatus": 0, 
@@ -88,6 +88,37 @@
    "permlevel": 0, 
    "reqd": 0, 
    "search_index": 1
+  }, 
+  {
+   "fieldname": "section_break_9", 
+   "fieldtype": "Section Break", 
+   "permlevel": 0
+  }, 
+  {
+   "fieldname": "process_name", 
+   "fieldtype": "Data", 
+   "label": "Process Name", 
+   "permlevel": 0, 
+   "read_only": 1
+  }, 
+  {
+   "fieldname": "item_name", 
+   "fieldtype": "Data", 
+   "label": "Item Name", 
+   "permlevel": 0, 
+   "read_only": 1
+  }, 
+  {
+   "fieldname": "column_break_12", 
+   "fieldtype": "Column Break", 
+   "permlevel": 0
+  }, 
+  {
+   "fieldname": "sales_order_number", 
+   "fieldtype": "Data", 
+   "label": "Sales Order Number", 
+   "permlevel": 0, 
+   "read_only": 1
   }, 
   {
    "fieldname": "section_break0", 
@@ -217,7 +248,7 @@
  "icon": "icon-check", 
  "idx": 1, 
  "max_attachments": 5, 
- "modified": "2014-05-27 03:49:20.708319", 
+ "modified": "2014-09-03 18:25:11.762249", 
  "modified_by": "Administrator", 
  "module": "Projects", 
  "name": "Task", 

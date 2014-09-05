@@ -6,6 +6,7 @@ frappe.require("assets/erpnext/js/controllers/stock_controller.js");
 
 erpnext.TransactionController = erpnext.stock.StockController.extend({
 	onload: function() {
+		console.log("in the transaction commom")
 		var me = this;
 		this._super();
 
@@ -119,6 +120,7 @@ erpnext.TransactionController = erpnext.stock.StockController.extend({
 
 
 	item_code: function(doc, cdt, cdn) {
+		console.log("in the item_code");
 		var me = this;
 		var item = frappe.get_doc(cdt, cdn);
 		if(item.item_code || item.barcode || item.serial_no) {

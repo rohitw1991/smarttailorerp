@@ -272,6 +272,38 @@ class Item(WebsiteGenerator):
 					row.label = label
 					row.description = desc
 
+
+	def get_details(self):
+		size_details= frappe.db.sql("""select name from `tabSize`""",as_list=1)
+		width_details= frappe.db.sql("""select name from `tabWidth`""",as_list=1)
+		self.set('size_item', [])
+		for size in size_details:
+			for width in width_details:
+				si = self.append('size_item', {})
+				si.size=size[0]
+				si.width=width[0]
+
+	def get_measurement_details(self, template):
+		self.set('measurement_item', [])
+		args = frappe.db.sql("""select * from `tabMeasurement Item`
+			where parent='%s'"""%(template),as_dict=1)
+		for data in args:
+			mi = self.append('measurement_item', {})
+			mi.parameter = data.parameter
+			mi.abbreviation = data.abbreviation
+			mi.image_view = data.image_view
+			mi.value = data.value
+			mi.default_value = data.default_value
+		return "Done"
+
+	def get_style_details(self, style_name):
+		for d in self.get('style_item'):
+			if d.style == style_name:
+				d.abbreviation = frappe.db.get_value('Style', style_name, 'abbreviation')
+				d.default_value = frappe.db.get_value('Style', style_name, 'default_value')
+		return "Done"
+
+
 def validate_end_of_life(item_code, end_of_life=None, verbose=1):
 	if not end_of_life:
 		end_of_life = frappe.db.get_value("Item", item_code, "end_of_life")

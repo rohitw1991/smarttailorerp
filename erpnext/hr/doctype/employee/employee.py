@@ -224,8 +224,8 @@ def validate_validity(doc, method):
 				doc.validity_start_date=nowdate()
 				doc.validity_end_date=add_months(nowdate(),cint(res[0][0]))
 				frappe.db.sql("update `tabUser` set flag='True' where name=%s", doc.name)				
-		else:
-	 			frappe.throw(_("Your User Creation limit is expired . Please contact administrator"))
+		# else:
+	 	# frappe.throw(_("Your User Creation limit is expired . Please contact administrator"))
 
 def update_user_permissions(doc, method):
 	# called via User hook

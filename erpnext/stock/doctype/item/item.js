@@ -4,8 +4,16 @@
 frappe.provide("erpnext.item");
 
 cur_frm.cscript.refresh = function(doc) {
+
+
+		// console.log(" in the onload");
+
+	
+
 	// make sensitive fields(has_serial_no, is_stock_item, valuation_method)
 	// read only if any stock ledger entry exists
+
+	// cur_frm.cscript.on_load();
 
 	cur_frm.cscript.make_dashboard();
 
@@ -60,6 +68,17 @@ cur_frm.cscript.refresh = function(doc) {
 		//cur_frm.toggle_display("item_group", false);		
 	}
 }
+
+
+cur_frm.cscript.onload= function(doc, cdt, cdn) {
+	
+		return get_server_fields('get_details','', '', doc, cdt, cdn, 1,function(){
+			refresh_field('size_item')
+		});
+	
+
+};
+
 
 erpnext.item.toggle_reqd = function(frm) {
 	frm.toggle_reqd("default_warehouse", frm.doc.is_stock_item==="Yes");
@@ -215,4 +234,29 @@ cur_frm.cscript.image = function() {
 	else {
 		msgprint(__("You may need to update: {0}", [frappe.meta.get_docfield(cur_frm.doc.doctype, "description_html").label]));
 	}
+}
+
+cur_frm.cscript.image = function(doc, cdt, cdn) {
+	var d = locals[cdt][cdn]
+	d.image_view = '<table style="width: 100%; table-layout: fixed;"><tr><td><img src="'+d.image+'" width="100px"></td></tr></table>'
+	refresh_field("measurement_item");
+}
+
+cur_frm.cscript.add_image = function(doc, cdt, cdn) {
+	var d = locals[cdt][cdn]
+	d.image_viewer = '<table style="width: 100%; table-layout: fixed;"><tr><td ><img src="'+d.add_image+'" width="100px"></td></tr></table>'
+	refresh_field("style_item");
+}
+
+cur_frm.cscript.measurement_template = function(doc, cdt, cdn){
+	get_server_fields('get_measurement_details',doc.measurement_template,'',doc ,cdt, cdn,1, function(){
+		refresh_field('measurement_item')
+	})
+}
+
+cur_frm.cscript.style = function(doc, cdt, cdn){
+	var	d = locals[cdt][cdn]
+	get_server_fields('get_style_details',d.style,'',doc ,cdt, cdn,1, function(){
+		refresh_field('style_item')
+	})
 }

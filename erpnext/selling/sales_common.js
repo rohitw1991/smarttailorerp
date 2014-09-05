@@ -15,6 +15,7 @@ frappe.require("assets/erpnext/js/transaction.js");
 
 erpnext.selling.SellingController = erpnext.TransactionController.extend({
 	onload: function() {
+		console.log("in the sales commom");
 		this._super();
 		this.setup_queries();
 		this.toggle_editable_price_list_rate();

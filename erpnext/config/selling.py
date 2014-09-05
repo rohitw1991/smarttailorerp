@@ -28,7 +28,7 @@ def get_data():
 				},
 				{
 					"type": "doctype",
-					"name": "Sales Order",
+					"name": "Sales Order Transaction",
 					"description": _("Confirmed orders from Customers."),
 				},
 				{

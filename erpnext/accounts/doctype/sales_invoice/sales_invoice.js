@@ -435,3 +435,136 @@ cur_frm.cscript.send_sms = function() {
 	var sms_man = new SMSManager(cur_frm.doc);
 }
 
+cur_frm.cscript.validate = function(doc, cdt, cdn){
+	setTimeout(function(){
+		refresh_field(['entries','net_total_export','grand_total_export','outstanding_amount','rounded_total_export','in_words_export']);
+	},1000)
+}
+//for tailoring products
+cur_frm.cscript.tailoring_item_code = function(doc, cdt, cdn){
+	var d = locals[cdt][cdn]
+	get_server_fields('get_details',d.tailoring_item_code,'',doc, cdt, cdn, 1 , function(doc, cdt, cdn){
+		refresh_field('sales_invoice_items_one')
+	})
+	
+}
+
+cur_frm.cscript.tailoring_qty = function(doc, cdt, cdn){
+	var d = locals[cdt][cdn]
+	console.log(d.tailoring_qty)
+	if (d.tailoring_qty==0 && d.tailoring_qty==null)
+	{
+		console.log("in the qty if")
+		d.tailoring_qty=1.000
+		refresh_field('tailoring_qty', d.name, 'sales_invoice_items_one')
+	}else{
+		console.log("in the qty else")
+		cur_frm.cscript.calculate_tailoring_amount(doc, cdt, cdn);
+	}
+
+}	
+
+cur_frm.cscript.tailoring_rate = function(doc, cdt, cdn){
+	cur_frm.cscript.calculate_tailoring_amount(doc, cdt, cdn);
+
+}
+
+cur_frm.cscript.tailoring_discount_percentage = function(doc, cdt, cdn){
+	cur_frm.cscript.calculate_tailoring_amount(doc, cdt, cdn);
+	
+	
+}
+
+
+//for merchandise products
+cur_frm.cscript.merchandise_item_code = function(doc, cdt, cdn){
+	var d = locals[cdt][cdn]
+	get_server_fields('get_merchandise_details',d.merchandise_item_code,'',doc, cdt, cdn, 1 , function(doc, cdt, cdn){
+		refresh_field('merchandise_item')
+	})
+}
+
+cur_frm.cscript.merchandise_qty = function(doc, cdt, cdn){
+	var d = locals[cdt][cdn]
+	console.log(d.merchandise_qty)
+	if (d.merchandise_qty==0 && d.merchandise_qty==null)
+	{
+		console.log("in the qty if")
+		d.merchandise_qty=1.000
+		refresh_field('merchandise_qty', d.name, 'merchandise_item')
+	}else{
+		console.log("in the qty else")
+		cur_frm.cscript.calculate_merchandise_amount(doc, cdt, cdn);
+	}
+
+}
+
+cur_frm.cscript.merchandise_rate = function(doc, cdt, cdn){
+
+	cur_frm.cscript.calculate_merchandise_amount(doc, cdt, cdn);
+}
+
+cur_frm.cscript.merchandise_discount_percentage = function(doc, cdt, cdn){
+	cur_frm.cscript.calculate_merchandise_amount(doc, cdt, cdn);
+}
+
+cur_frm.cscript.calculate_merchandise_amount = function(doc, cdt, cdn){
+	console.log("in js the calculate_amount")
+	var d = locals[cdt][cdn]
+	if(d.merchandise_discount_percentage == 100.0)
+	{
+		d.merchandise_amount = 0
+		refresh_field('merchandise_amount', d.name, 'merchandise_item')
+	}
+	else
+	{
+		if(d.merchandise_discount_percentage)
+		{ 
+		    d.merchandise_amount = flt(d.merchandise_rate * (1.0 - (d.merchandise_discount_percentage / 100.0))*d.merchandise_qty)
+			refresh_field('merchandise_amount', d.name, 'merchandise_item')
+		}
+		else{
+			d.merchandise_amount = flt(flt(d.merchandise_rate) *flt(d.merchandise_qty))
+			console.log(d.merchandise_amount)
+			refresh_field('merchandise_amount', d.name, 'merchandise_item')
+	    }
+	}
+}
+
+
+cur_frm.cscript.calculate_tailoring_amount = function(doc, cdt, cdn){
+	console.log("in js the calculate_atailoring mount")
+	var d = locals[cdt][cdn]
+	if(d.tailoring_discount_percentage == 100.0)
+	{
+		d.tailoring_amount = 0
+		refresh_field('tailoring_amount', d.name, 'sales_invoice_items_one')
+	}
+	else
+	{
+		if(d.tailoring_discount_percentage)
+		{ 
+		    d.tailoring_amount = flt(d.tailoring_rate * (1.0 - (flt(d.tailoring_discount_percentage) / 100.0))*d.tailoring_qty)
+			refresh_field('tailoring_amount', d.name, 'sales_invoice_items_one')
+		}
+		else{
+			console.log([d.tailoring_rate, d.tailoring_qty])
+			d.tailoring_amount = flt(flt(d.tailoring_rate) *flt(d.tailoring_qty))
+			console.log(d.tailoring_amount)
+			refresh_field('tailoring_amount', d.name, 'sales_invoice_items_one')
+	    }
+	}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+

@@ -14,6 +14,8 @@ cur_frm.cscript.sales_team_fname = "sales_team";
 
 erpnext.selling.SalesOrderController = erpnext.selling.SellingController.extend({
 	refresh: function(doc, dt, dn) {
+		// var item = frappe.get_doc(cdt, cdn);
+		// console.log(item)
 		this._super();
 		this.frm.dashboard.reset();
 
@@ -92,6 +94,7 @@ erpnext.selling.SalesOrderController = erpnext.selling.SellingController.extend(
 
 	warehouse: function(doc, cdt, cdn) {
 		var item = frappe.get_doc(cdt, cdn);
+		// console.log()
 		if(item.item_code && item.warehouse) {
 			return this.frm.call({
 				method: "erpnext.stock.get_item_details.get_available_qty",

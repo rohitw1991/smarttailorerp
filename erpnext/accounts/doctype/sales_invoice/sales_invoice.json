@@ -1,5 +1,5 @@
 {
-  "allow_import": 1, 
+ "allow_import": 1, 
  "autoname": "naming_series:", 
  "creation": "2013-05-24 19:29:05", 
  "default_print_format": "Standard", 
@@ -31,6 +31,7 @@
    "fieldname": "customer", 
    "fieldtype": "Link", 
    "hidden": 0, 
+   "in_list_view": 1, 
    "label": "Customer", 
    "no_copy": 0, 
    "oldfieldname": "customer", 
@@ -72,6 +73,7 @@
    "fieldname": "contact_mobile", 
    "fieldtype": "Small Text", 
    "hidden": 1, 
+   "in_list_view": 1, 
    "label": "Mobile No", 
    "permlevel": 0, 
    "read_only": 1
@@ -145,6 +147,7 @@
    "fieldname": "posting_date", 
    "fieldtype": "Date", 
    "in_filter": 1, 
+   "in_list_view": 1, 
    "label": "Date", 
    "no_copy": 1, 
    "oldfieldname": "posting_date", 
@@ -292,6 +295,20 @@
    "read_only": 0
   }, 
   {
+   "fieldname": "sales_invoice_items_one", 
+   "fieldtype": "Table", 
+   "label": "Sales Invoice Items One", 
+   "options": "Sales Invoice Items", 
+   "permlevel": 0
+  }, 
+  {
+   "fieldname": "merchandise_item", 
+   "fieldtype": "Table", 
+   "label": "Merchandise Items", 
+   "options": "Merchandise Items", 
+   "permlevel": 0
+  }, 
+  {
    "allow_on_submit": 1, 
    "fieldname": "entries", 
    "fieldtype": "Table", 
@@ -301,7 +318,7 @@
    "options": "Sales Invoice Item", 
    "permlevel": 0, 
    "read_only": 0, 
-   "reqd": 1
+   "reqd": 0
   }, 
   {
    "fieldname": "packing_list", 
@@ -344,7 +361,7 @@
    "permlevel": 0, 
    "print_hide": 1, 
    "read_only": 1, 
-   "reqd": 1
+   "reqd": 0
   }, 
   {
    "fieldname": "column_break_32", 
@@ -479,7 +496,7 @@
    "permlevel": 0, 
    "print_hide": 1, 
    "read_only": 1, 
-   "reqd": 1, 
+   "reqd": 0, 
    "search_index": 0
   }, 
   {
@@ -548,7 +565,7 @@
    "permlevel": 0, 
    "print_hide": 0, 
    "read_only": 1, 
-   "reqd": 1
+   "reqd": 0
   }, 
   {
    "fieldname": "rounded_total_export", 
@@ -1192,7 +1209,7 @@
  "icon": "icon-file-text", 
  "idx": 1, 
  "is_submittable": 1, 
- "modified": "2014-08-14 02:13:09.673510", 
+ "modified": "2014-09-05 11:19:50.580990", 
  "modified_by": "Administrator", 
  "module": "Accounts", 
  "name": "Sales Invoice", 

@@ -5,8 +5,8 @@ from __future__ import unicode_literals
 import frappe
 import frappe.defaults
 
-from frappe.utils import add_days, cint, cstr, date_diff, flt, getdate, nowdate, \
-	get_first_day, get_last_day
+from frappe.utils import add_days, cint, cstr, date_diff, rounded, flt, getdate, nowdate, \
+	get_first_day, get_last_day,money_in_words
 from frappe.model.naming import make_autoname
 from frappe import _, msgprint, throw
 
@@ -45,7 +45,9 @@ class SalesInvoice(SellingController):
 		}]
 
 	def validate(self):
+		
 		super(SalesInvoice, self).validate()
+		# self.merge_tailoring_items()
 		self.validate_posting_time()
 		self.so_dn_required()
 		self.validate_proj_cust()
@@ -57,6 +59,10 @@ class SalesInvoice(SellingController):
 		self.validate_fixed_asset_account()
 		self.clear_unallocated_advances("Sales Invoice Advance", "advance_adjustment_details")
 		self.add_remarks()
+		#for merging items
+		
+
+
 
 		if cint(self.is_pos):
 			self.validate_pos()
@@ -78,6 +84,9 @@ class SalesInvoice(SellingController):
 		self.validate_recurring_invoice()
 		self.validate_multiple_billing("Delivery Note", "dn_detail", "amount",
 			"delivery_note_details")
+		self.merge_tailoring_items()
+		# self.merge_merchandise_items()
+
 
 	def on_submit(self):
 		if cint(self.update_stock) == 1:
@@ -105,6 +114,92 @@ class SalesInvoice(SellingController):
 		self.update_time_log_batch(self.name)
 		self.convert_to_recurring()
 
+	def get_details(self, item):
+		if item:
+			self.get_item_details(item)
+
+	def get_merchandise_details(self,item):
+		if item:
+			self.get_merchandise_item_details(item)
+
+
+	def get_item_details(self, item):
+		for d in self.get('sales_invoice_items_one'):
+			if d.tailoring_item_code == item:
+				d.tailoring_item_name = frappe.db.get_value('Item', item, 'item_name')
+				d.tailoring_description = frappe.db.get_value('Item', item, 'description')
+				d.tailoring_stock_uom =frappe.db.get_value('Item', item, 'stock_uom')
+		return "Done"
+
+	def get_merchandise_item_details(self, item):
+		for d in self.get('merchandise_item'):
+			if d.merchandise_item_code == item:
+				d.merchandise_item_name = frappe.db.get_value('Item', item, 'item_name')
+				d.merchandise_description = frappe.db.get_value('Item', item, 'description')
+				d.merchandise_stock_uom =frappe.db.get_value('Item', item, 'stock_uom')
+		return "Done"		
+
+	def merge_tailoring_items(self):
+		self.set('entries', [])
+		amt = amount = 0.0
+		for d in self.get('sales_invoice_items_one'):
+			e = self.append('entries', {})
+			e.barcode=d.tailoring_barcode
+			e.item_code=d.tailoring_item_code
+			e.item_name=d.tailoring_item_name
+			e.work_order=d.tailoring_work_order
+			e.description=d.tailoring_description
+			e.warehouse=d.tailoring_warehouse
+			e.income_account=d.tailoring_income_account
+			e.cost_center=d.tailoring_cost_center
+			e.batch_no=d.tailoring_batch_no
+			e.item_tax_rate=d.tailoring_item_tax_rate
+			e.stock_uom=d.tailoring_stock_uom 
+			e.price_list_rate=d.tailoring_price_list_rate
+			e.discount_percentage=d.tailoring_discount_percentage
+			e.amount= d.tailoring_amount
+			e.base_amount=e.amount
+			e.base_rate=d.tailoring_rate
+			e.rate=d.tailoring_rate
+			e.base_price_list_rate=d.tailoring_base_price_list_rate
+			e.qty=d.tailoring_qty
+			e.base_price_list_rate=d.tailoring_base_price_list_rate
+			amt += flt(e.amount)
+		amount = self.merge_merchandise_items()
+		self.net_total_export = cstr(flt(amount) + flt(amt))
+		self.grand_total_export = cstr(flt(amount) + flt(amt))
+		self.outstanding_amount = cstr(flt(amount) + flt(amt))
+		self.rounded_total_export = cstr(rounded(flt(amount) + flt(amt)))
+		self.in_words_export = cstr(money_in_words(flt(amount) + flt(amt)))
+		return "Done"
+
+	def merge_merchandise_items(self):
+		amount = 0.0
+		for d in self.get('merchandise_item'):
+			e = self.append('entries', {})
+			e.barcode=d.merchandise_barcode
+			e.item_code=d.merchandise_item_code
+			e.item_name=d.merchandise_item_name
+			e.work_order=d.merchandise_work_order
+			e.description=d.merchandise_description
+			e.warehouse=d.merchandise_warehouse
+			e.income_account=d.merchandise_income_account
+			e.cost_center=d.merchandise_cost_center
+			e.batch_no=d.merchandise_batch_no
+			e.item_tax_rate=d.merchandise_item_tax_rate
+			e.stock_uom=d.merchandise_stock_uom 
+			e.price_list_rate=d.merchandise_price_list_rate
+			e.discount_percentage=d.merchandise_discount_percentage
+			e.amount= d.merchandise_amount
+			e.base_amount=d.merchandise_amount
+			e.base_rate=d.merchandise_rate
+			e.rate=d.merchandise_rate
+			e.base_price_list_rate=d.merchandise_base_price_list_rate
+			e.qty=d.merchandise_qty
+			e.base_price_list_rate=d.merchandise_base_price_list_rate
+			amount += flt(e.amount) 
+		return amount
+			
 	def before_cancel(self):
 		self.update_time_log_batch(None)
 

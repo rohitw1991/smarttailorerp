@@ -33,16 +33,28 @@
   {
    "fieldname": "item_name", 
    "fieldtype": "Data", 
-   "in_list_view": 0, 
-   "label": "Item Name", 
-   "oldfieldname": "item_name", 
-   "oldfieldtype": "Data", 
-   "permlevel": 0, 
-   "print_hide": 1, 
-   "print_width": "150", 
-   "read_only": 0, 
-   "reqd": 1, 
-   "width": "150"
+   "label": "Garment", 
+   "permlevel": 0
+  }, 
+  {
+   "fieldname": "item_group1", 
+   "fieldtype": "Link", 
+   "label": "Service Type", 
+   "options": "Item Group", 
+   "permlevel": 0
+  }, 
+  {
+   "fieldname": "size", 
+   "fieldtype": "Link", 
+   "label": "Size", 
+   "options": "Size", 
+   "permlevel": 0
+  }, 
+  {
+   "fieldname": "fabric", 
+   "fieldtype": "Data", 
+   "label": "Fabric", 
+   "permlevel": 0
   }, 
   {
    "fieldname": "col_break1", 
@@ -54,7 +66,7 @@
    "fieldtype": "Small Text", 
    "in_filter": 1, 
    "in_list_view": 1, 
-   "label": "Description", 
+   "label": "Notes", 
    "oldfieldname": "description", 
    "oldfieldtype": "Small Text", 
    "permlevel": 0, 
@@ -63,6 +75,11 @@
    "reqd": 1, 
    "search_index": 1, 
    "width": "300px"
+  }, 
+  {
+   "fieldname": "section_break_5", 
+   "fieldtype": "Section Break", 
+   "permlevel": 0
   }, 
   {
    "fieldname": "quantity_and_rate", 
@@ -75,7 +92,7 @@
    "fieldname": "qty", 
    "fieldtype": "Float", 
    "in_list_view": 1, 
-   "label": "Quantity", 
+   "label": "Quantity Split/Combine", 
    "oldfieldname": "qty", 
    "oldfieldtype": "Currency", 
    "permlevel": 0, 
@@ -434,7 +451,7 @@
  ], 
  "idx": 1, 
  "istable": 1, 
- "modified": "2014-08-14 08:36:39.773447", 
+ "modified": "2014-09-02 13:27:38.890497", 
  "modified_by": "Administrator", 
  "module": "Selling", 
  "name": "Sales Order Item", 
