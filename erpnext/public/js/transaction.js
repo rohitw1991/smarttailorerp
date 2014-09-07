@@ -6,7 +6,6 @@ frappe.require("assets/erpnext/js/controllers/stock_controller.js");
 
 erpnext.TransactionController = erpnext.stock.StockController.extend({
 	onload: function() {
-		console.log("in the transaction commom")
 		var me = this;
 		this._super();
 

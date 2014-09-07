@@ -84,7 +84,7 @@ class SalesInvoice(SellingController):
 		self.validate_recurring_invoice()
 		self.validate_multiple_billing("Delivery Note", "dn_detail", "amount",
 			"delivery_note_details")
-		self.merge_tailoring_items()
+		# self.merge_tailoring_items()
 		# self.merge_merchandise_items()
 
 
@@ -158,19 +158,23 @@ class SalesInvoice(SellingController):
 			e.price_list_rate=d.tailoring_price_list_rate
 			e.discount_percentage=d.tailoring_discount_percentage
 			e.amount= d.tailoring_amount
-			e.base_amount=e.amount
-			e.base_rate=d.tailoring_rate
+			e.base_amount= cstr(flt(e.amount)*flt(self.conversion_rate))
+			e.base_rate=  cstr(flt(d.tailoring_rate)*flt(self.conversion_rate))
 			e.rate=d.tailoring_rate
 			e.base_price_list_rate=d.tailoring_base_price_list_rate
 			e.qty=d.tailoring_qty
 			e.base_price_list_rate=d.tailoring_base_price_list_rate
 			amt += flt(e.amount)
 		amount = self.merge_merchandise_items()
-		self.net_total_export = cstr(flt(amount) + flt(amt))
-		self.grand_total_export = cstr(flt(amount) + flt(amt))
-		self.outstanding_amount = cstr(flt(amount) + flt(amt))
-		self.rounded_total_export = cstr(rounded(flt(amount) + flt(amt)))
-		self.in_words_export = cstr(money_in_words(flt(amount) + flt(amt)))
+		self.net_total_export = cstr(flt(amount) + flt(amt) + flt(self.other_charges_total_export))
+		self.grand_total_export = cstr(flt(amount) + flt(amt) + flt(self.other_charges_total_export))
+		self.rounded_total_export = cstr(rounded(flt(amount) + flt(amt) + flt(self.other_charges_total_export)))
+		self.in_words_export = cstr(money_in_words(flt(amount) + flt(amt) + flt(self.other_charges_total_export),self.currency))
+		self.net_total = cstr(flt(self.net_total_export) * flt(self.conversion_rate))
+		self.grand_total = cstr(flt(self.net_total) + flt(self.other_charges_total))
+		self.rounded_total = cstr(rounded(flt(self.net_total) + flt(self.other_charges_total)))
+		self.in_words = cstr(money_in_words(flt(self.net_total) + flt(self.other_charges_total)))
+		self.outstanding_amount = cstr(flt(self.net_total) + flt(self.other_charges_total) - flt(self.total_advance))
 		return "Done"
 
 	def merge_merchandise_items(self):
@@ -191,8 +195,8 @@ class SalesInvoice(SellingController):
 			e.price_list_rate=d.merchandise_price_list_rate
 			e.discount_percentage=d.merchandise_discount_percentage
 			e.amount= d.merchandise_amount
-			e.base_amount=d.merchandise_amount
-			e.base_rate=d.merchandise_rate
+			e.base_amount=cstr(flt(d.merchandise_amount)*flt(self.conversion_rate))
+			e.base_rate=cstr(flt(d.merchandise_rate)*flt(self.conversion_rate))
 			e.rate=d.merchandise_rate
 			e.base_price_list_rate=d.merchandise_base_price_list_rate
 			e.qty=d.merchandise_qty
@@ -926,3 +930,4 @@ def make_delivery_note(source_name, target_doc=None):
 	}, target_doc, set_missing_values)
 
 	return doclist
+	

@@ -111,7 +111,3 @@ cur_frm.cscript.view = function(doc, cdt, cdn){
 			}
 		})		
 }
-
-cur_frm.cscript.add = function(doc, cdt, cdn){
-	
-}

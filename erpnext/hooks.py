@@ -65,7 +65,7 @@ doc_events = {
 		"validate" : "tools.tools_management.custom_methods.branch_validation"
 	},
 	"Sales Invoice": {
-		"on_submit" : "tools.tools_management.custom_methods.generate_project_aginst_si",
+		"on_submit" : "tools.tools_management.custom_methods.sales_invoice_on_submit_methods",
 		"on_cancel" : "tools.tools_management.custom_methods.delete_project_aginst_si"  
 	}
 }

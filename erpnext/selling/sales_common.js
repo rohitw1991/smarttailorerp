@@ -15,7 +15,6 @@ frappe.require("assets/erpnext/js/transaction.js");
 
 erpnext.selling.SellingController = erpnext.TransactionController.extend({
 	onload: function() {
-		console.log("in the sales commom");
 		this._super();
 		this.setup_queries();
 		this.toggle_editable_price_list_rate();
@@ -329,7 +328,7 @@ erpnext.selling.SellingController = erpnext.TransactionController.extend({
 	calculate_net_total: function() {
 		var me = this;
 		this.frm.doc.net_total = this.frm.doc.net_total_export = 0.0;
-
+		alert("hiiii")
 		$.each(this.frm.item_doclist, function(i, item) {
 			me.frm.doc.net_total += item.base_amount;
 			me.frm.doc.net_total_export += item.amount;
